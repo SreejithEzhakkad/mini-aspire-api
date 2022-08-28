@@ -84,4 +84,22 @@ class AdminAuthController extends BaseController
             return $this->sendError($th->getMessage(), [], 500);
         } 
     }
+
+    /**
+     * logout
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function logout(Request $request)
+    {
+        try {
+            $request->user()->currentAccessToken()->delete();
+            return $this->sendResponse([], __('You have been logged out successfully.'));
+
+        } catch (\Throwable $th) {
+            
+            return $this->sendError($th->getMessage(), [], 500);
+        } 
+    }
 }
