@@ -29,6 +29,6 @@ Clone the repository.
 
 `$ php artisan serve`
 
-Import the post man collection and start testing - https://www.getpostman.com/collections/e8df6361d759c4cc615a
+Import the postman API collection and start verifying - https://www.getpostman.com/collections/e8df6361d759c4cc615a
 
 
