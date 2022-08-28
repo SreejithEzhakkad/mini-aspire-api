@@ -32,7 +32,7 @@ class LoanController extends BaseController
      */
     public function show(Loan $loan)
     {
-        $response['loan'] = $loan->with('repayments')->get();
+        $response['loan'] = $loan->with('repayments')->first();
 
         return $this->sendResponse($response, NULL);
     }
@@ -57,7 +57,7 @@ class LoanController extends BaseController
                 return $this->sendError(__('Validation Error.'), $validator->errors());
             }
 
-            $validated = $request->safe();
+            $validated = $validator->validated();
 
             $loan = $request->user()->loans()->create([
                 'amount'         => $validated['amount'],
@@ -85,6 +85,11 @@ class LoanController extends BaseController
      */
     public function approve(Loan $loan)
     {
+        if($loan->status == 'APPROVED')
+        {
+            return $this->sendError(__('This loan is already approved.'), [],403);
+        }
+
         $loan->status = 'APPROVED';
         $loan->save();
         $response['loan'] = Loan::with('repayments')->find($loan->id);
@@ -105,15 +110,20 @@ class LoanController extends BaseController
         if($repayment->loan_id != $loan->id){
             abort(404);
         }
+        if($loan->status != 'APPROVED')
+        {
+            return $this->sendError(__('This loan is not approved yet.'), [],403);
+        }
+        if($repayment->status != 'PENDING')
+        {
+            return $this->sendError(__('This repayment was already paid.'), [],403);
+        }
+
         $validator = Validator::make($request->all(), 
         [
             'amount' => ['required', 'numeric', function ($attribute, $value, $fail) use($repayment) {
                     if ($repayment->amount >= $value) {
                         return $fail(__("Repayment amount is $repayment->amount"));
-                    }
-                }, function ($attribute, $value, $fail) use($repayment) {
-                    if ($repayment->status != 'PENDING') {
-                        return $fail(__("This repayment was already paid."));
                     }
                 }]
         ]);
@@ -122,7 +132,7 @@ class LoanController extends BaseController
             return $this->sendError(__('Validation Error.'), $validator->errors());
         }
 
-        $validated = $request->safe();
+        $validated = $validator->validated();
 
         $repayment->paid_amount = $validated['amount'];
         $repayment->paid_date = today();

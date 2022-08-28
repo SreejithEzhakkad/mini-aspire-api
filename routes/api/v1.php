@@ -18,28 +18,24 @@ use App\Http\Controllers\Api\V1\LoanController;
 |
 */
 
-Route::prefix('customer')->name('customer.')->group(function () {
-    Route::prefix('auth')->group(function () {
+/**
+ * Auth Routes
+ */
+Route::prefix('auth')->group(function () {
+    
+    //Customer Auth
+    
+    Route::prefix('customer')->name('customer.')->group(function () {
         Route::post('register', [CustomerAuthController::class, 'register'])->name('register');
         Route::post('login', [CustomerAuthController::class, 'login'])->name('login');
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('logout', [CustomerAuthController::class, 'logout'])->name('logout');
         });
     });
+    
+    // Admin Auth
 
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::prefix('loans')->name('loans.')->group(function () {
-            Route::post('request', [LoanController::class, 'loanRequest'])->name('request');
-            Route::get('/', [LoanController::class, 'index'])->name('index');
-            Route::get('{loan}', [LoanController::class, 'show'])->name('show');
-            Route::post('{loan}/repayments/{repayment}/pay', [LoanController::class, 'repay'])->name('repaymentPay');
-        });
-    });
-});
-
-
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::prefix('auth')->group(function () {
+    Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('register', [AdminAuthController::class, 'register'])->name('register');
         Route::post('login', [AdminAuthController::class, 'login'])->name('login');
         Route::middleware('auth:sanctum')->group(function () {
@@ -47,11 +43,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
     });
 
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::prefix('loans')->name('loans.')->group(function () {
-            Route::get('/', [LoanController::class, 'index'])->name('index');
-            Route::get('{loan}', [LoanController::class, 'show'])->name('show');
-            Route::post('{loan}/approve', [LoanController::class, 'approve'])->name('approve');
-        });
+});
+
+/**
+ * Loan Routes
+ */
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('loans')->name('loans.')->group(function () {
+        Route::post('request', [LoanController::class, 'loanRequest'])->name('request');
+        Route::get('/', [LoanController::class, 'index'])->name('index');
+        Route::get('{loan}', [LoanController::class, 'show'])->name('show');
+        Route::post('{loan}/repayments/{repayment}/pay', [LoanController::class, 'repay'])->name('repay');
+        Route::post('{loan}/approve', [LoanController::class, 'approve'])->name('approve');
     });
 });
+
