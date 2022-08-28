@@ -19,7 +19,12 @@ class LoanController extends BaseController
      */
     public function index(Request $request)
     {
-        $response['loans'] = $request->user()->loans()->with('repayments')->get();
+        if ($request->user()->tokenCan('admin.*')) {
+            $response['loans'] = Loan::with('repayments')->get();
+
+        }else{
+            $response['loans'] = $request->user()->loans()->with('repayments')->get();
+        }
 
         return $this->sendResponse($response, NULL);
     }
@@ -30,8 +35,14 @@ class LoanController extends BaseController
      * @param  mixed $loan
      * @return void
      */
-    public function show(Loan $loan)
+    public function show(Loan $loan, Request $request)
     {
+        if (!$request->user()->tokenCan('admin.*')) {
+            if ($request->user()->cannot('view', $loan)) {
+                abort(403);
+            }
+        }
+        
         $response['loan'] = $loan->with('repayments')->first();
 
         return $this->sendResponse($response, NULL);
@@ -107,6 +118,10 @@ class LoanController extends BaseController
      */
     public function repay(Loan $loan, Repayment $repayment, Request $request)
     {
+        if ($request->user()->cannot('update', $loan)) {
+            abort(403);
+        }
+
         if($repayment->loan_id != $loan->id){
             abort(404);
         }

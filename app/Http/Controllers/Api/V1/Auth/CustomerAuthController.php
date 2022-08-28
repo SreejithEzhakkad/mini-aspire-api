@@ -41,7 +41,7 @@ class CustomerAuthController extends BaseController
             ]);
 
             $response = [
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'token' => $user->createToken("API TOKEN",['customer.*'])->plainTextToken
             ];
 
             return $this->sendResponse($response, __('You have been registered successfully.'));
@@ -77,7 +77,7 @@ class CustomerAuthController extends BaseController
                 return $this->sendError(__('Email & Password does not match with our record.'), [], 401);
             }
 
-            $response['token'] =  $user->createToken('API TOKEN')->plainTextToken; 
+            $response['token'] =  $user->createToken('API TOKEN',['customer.*'])->plainTextToken; 
                 
             return $this->sendResponse($response, __('You have been logged in successfully.'));
 
