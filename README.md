@@ -33,8 +33,11 @@ Clone the repository.
 
 `$ php artisan serve`
 
-To view the APIs and its documentation, import the postman API collection and change the collection variable `base_url` if required. 
-Postman Collection - https://www.getpostman.com/collections/e8df6361d759c4cc615a
+To view the APIs and its documentation, import the postman API collection. Review the collection variables. 
+If required change the collection variable `base_url` value. 
+The `customer_api_token` and `admin_api_token` varaiable will be automatically updated on register, login and logout.
+
+Postman Collection: https://www.getpostman.com/collections/e8df6361d759c4cc615a
 
 ## Testing
 
