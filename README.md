@@ -38,6 +38,22 @@ Postman Collection - https://www.getpostman.com/collections/e8df6361d759c4cc615a
 
 ## Testing
 
-Run the following command.
+I recomment to create seperate Database for testing, becasue i have enabled the resettign the database. 
+
+Create a test enviornment fimeRun the following command.
+
+`$ cp .env .env.testing`
+
+Update test database credentials in `.env.testing`
+
+Clear config cache to detect new test environment.
+
+`$ php artisan config:clear`
+
+  Run the migration in test database.
+
+`$ php artisan migrate --env=testing`
+
+Run the test
 
 `$ php artisan test`
