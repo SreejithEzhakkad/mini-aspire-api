@@ -25,10 +25,19 @@ Clone the repository.
 
 `$ php artisan migrate`
 
+  To seed some test values(customer account, admin account, and loan).
+
+`$ php artisan db:seed`
+
   Start the application in local server.
 
 `$ php artisan serve`
 
-Import the postman API collection and start verifying - https://www.getpostman.com/collections/e8df6361d759c4cc615a
+To view the APIs and its documentation, import the postman API collection and change the collection variable `base_url` if required. 
+Postman Collection - https://www.getpostman.com/collections/e8df6361d759c4cc615a
 
+## Testing
 
+Run the following command.
+
+`$ php artisan test`
