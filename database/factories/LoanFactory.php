@@ -18,7 +18,7 @@ class LoanFactory extends Factory
     {
         return [
             'amount' => fake()->numberBetween(10, 10000),
-            'terms' => fake->numberBetween(1, 100),
+            'terms' => fake()->numberBetween(1, 100),
             'status' => 'PENDING',
             'requested_date' => today()
         ];
