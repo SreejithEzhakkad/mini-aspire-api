@@ -40,7 +40,7 @@ Postman Collection - https://www.getpostman.com/collections/e8df6361d759c4cc615a
 
 I recommend creating a separate database for testing because I have enabled the  'database resetting' after testing. 
 
-Create a test enviornment fimeRun the following command.
+Create a test enviornment file using the following command.
 
 `$ cp .env .env.testing`
 
