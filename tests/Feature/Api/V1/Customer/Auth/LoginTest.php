@@ -14,7 +14,7 @@ class LoginTest extends TestCase
 
     public function test_required_fields_for_registration()
     {
-        $response = $this->postJson(route('customer.login'),[]);
+        $response = $this->postJson(route('v1.customer.login'),[]);
         $response->assertStatus(422)
             ->assertJson([
                 'success' => false,
@@ -35,7 +35,7 @@ class LoginTest extends TestCase
             'password' => Hash::make($password = fake()->password), 
         ]);
 
-        $response = $this->postJson(route('customer.login'),[
+        $response = $this->postJson(route('v1.customer.login'),[
             'email'                 => 'another@mail.com',
             'password'              => $password
             ]);
@@ -55,7 +55,7 @@ class LoginTest extends TestCase
             'password' => Hash::make($password = fake()->password), 
         ]);
 
-        $response = $this->postJson(route('customer.login'),[
+        $response = $this->postJson(route('v1.customer.login'),[
             'email'                 => $email,
             'password'              => 'another-apassword'
             ]);
@@ -75,7 +75,7 @@ class LoginTest extends TestCase
             'password' => Hash::make($password = fake()->password), 
         ]);
 
-        $response = $this->postJson(route('customer.login'),[
+        $response = $this->postJson(route('v1.customer.login'),[
             'email'                 => $email,
             'password'              => $password
             ]);

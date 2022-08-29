@@ -13,7 +13,7 @@ class RegisterTest extends TestCase
 
     public function test_required_fields_for_registration()
     {
-        $response = $this->postJson(route('customer.register'),[]);
+        $response = $this->postJson(route('v1.customer.register'),[]);
         $response->assertStatus(422)
             ->assertJson([
                 'success' => false,
@@ -28,7 +28,7 @@ class RegisterTest extends TestCase
 
     public function test_password_confirmation_should_be_match()
     {
-        $response = $this->postJson(route('customer.register'),[
+        $response = $this->postJson(route('v1.customer.register'),[
             'name'                  => fake()->name(),
             'email'                 => fake()->safeEmail(),
             'password'              => fake()->password(8,20),
@@ -47,7 +47,7 @@ class RegisterTest extends TestCase
     public function test_customer_can_register_with_valid_inputs()
     {
         $password = fake()->password(8,20);
-        $response = $this->postJson(route('customer.register'),[
+        $response = $this->postJson(route('v1.customer.register'),[
             'name'                  => fake()->name(),
             'email'                 => fake()->safeEmail(),
             'password'              => $password,
@@ -65,7 +65,7 @@ class RegisterTest extends TestCase
         $user = User::factory()->create();
         
         $password = fake()->password(8,20);
-        $response = $this->postJson(route('customer.register'),[
+        $response = $this->postJson(route('v1.customer.register'),[
             'name'                  => fake()->name(),
             'email'                 => $user->email,
             'password'              => $password,
