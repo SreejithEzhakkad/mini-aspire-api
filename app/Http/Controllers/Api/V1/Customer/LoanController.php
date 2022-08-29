@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Customer;
 
 use App\Models\Loan;
 use App\Models\Repayment;
@@ -12,20 +12,15 @@ class LoanController extends BaseController
 {    
         
     /**
-     * index
+     * list all loans of current customer
      *
      * @param  mixed $request
      * @return void
      */
     public function index(Request $request)
     {
-        if ($request->user()->tokenCan('admin.*')) {
-            $response['loans'] = Loan::with('repayments')->get();
-
-        }else{
-            $response['loans'] = $request->user()->loans()->with('repayments')->get();
-        }
-
+        $response['loans'] = $request->user()->loans()->with('repayments')->get();
+        
         return $this->sendResponse($response, NULL);
     }
     
@@ -37,10 +32,9 @@ class LoanController extends BaseController
      */
     public function show(Loan $loan, Request $request)
     {
-        if (!$request->user()->tokenCan('admin.*')) {
-            if ($request->user()->cannot('view', $loan)) {
-                abort(403);
-            }
+        //Customer can view their onw loan only
+        if ($request->user()->cannot('view', $loan)) {
+            abort(403);
         }
         
         $response['loan'] = $loan->with('repayments')->first();
@@ -49,7 +43,7 @@ class LoanController extends BaseController
     }
         
     /**
-     * loanRequest
+     * create loan
      *
      * @param  mixed $request
      * @return void
@@ -87,27 +81,7 @@ class LoanController extends BaseController
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
-    
-    /**
-     * approve
-     *
-     * @param  mixed $loan
-     * @return void
-     */
-    public function approve(Loan $loan)
-    {
-        if($loan->status == 'APPROVED')
-        {
-            return $this->sendError(__('This loan is already approved.'), [],403);
-        }
-
-        $loan->status = 'APPROVED';
-        $loan->save();
-        $response['loan'] = Loan::with('repayments')->find($loan->id);
-
-        return $this->sendResponse($response,  __('The loan request has been approved successfully.'));
-    }
-    
+     
     /**
      * repay
      *
@@ -118,6 +92,7 @@ class LoanController extends BaseController
      */
     public function repay(Loan $loan, Repayment $repayment, Request $request)
     {
+        //Cusomer can repay only their onw loan
         if ($request->user()->cannot('update', $loan)) {
             abort(403);
         }
@@ -137,7 +112,7 @@ class LoanController extends BaseController
         $validator = Validator::make($request->all(), 
         [
             'amount' => ['required', 'numeric', function ($attribute, $value, $fail) use($repayment) {
-                    if ($repayment->amount >= $value) {
+                    if ($repayment->amount > $value) {
                         return $fail(__("Repayment amount is $repayment->amount"));
                     }
                 }]

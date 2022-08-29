@@ -13,5 +13,5 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::prefix('v1')
-    ->group(base_path('routes/api/v1.php'));
+Route::prefix('v1')->name('v1.')
+    ->group(base_path('routes/api/v1/index.php'));
